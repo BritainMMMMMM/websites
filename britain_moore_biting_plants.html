@@ -1,0 +1,491 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .bm-root {
+    font-family: 'DM Sans', sans-serif;
+    min-height: 600px; position: relative; overflow: hidden;
+    background: #0e0e12; color: #f0eeea; cursor: none;
+  }
+  .bm-bg-mesh {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 60% at 20% 10%, rgba(83,74,183,0.22) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 80% 80%, rgba(29,158,117,0.15) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 50% at 60% 30%, rgba(212,83,126,0.10) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .bm-grain {
+    position: absolute; inset: 0; opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px; pointer-events: none;
+  }
+  .bm-wrap {
+    position: relative; z-index: 1; max-width: 620px; margin: 0 auto;
+    padding: 3.5rem 2rem 3rem; display: flex; flex-direction: column; gap: 2.5rem;
+  }
+  .bm-eyebrow { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #9e8fcf; font-weight: 400; margin-bottom: 0.4rem; }
+  .bm-name { font-family: 'Cormorant Garamond', serif; font-size: 52px; font-weight: 300; line-height: 1; color: #f0eeea; }
+  .bm-name span { color: #7f77dd; }
+  .bm-tagline { font-size: 14px; color: #8b8a87; font-weight: 300; margin-top: 0.6rem; }
+  .bm-divider { width: 48px; height: 1px; background: linear-gradient(90deg, #7f77dd, transparent); margin-top: 1rem; }
+  .bm-section-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #555454; font-weight: 500; margin-bottom: 1rem; }
+  .bm-contact-row {
+    display: flex; align-items: center; gap: 1rem; padding: 1rem 1.25rem; border-radius: 12px;
+    background: rgba(255,255,255,0.03); border: 0.5px solid rgba(255,255,255,0.07);
+    text-decoration: none; color: inherit; transition: background 0.2s, border-color 0.2s, transform 0.15s; cursor: none;
+  }
+  .bm-contact-row:hover { background: rgba(127,119,221,0.1); border-color: rgba(127,119,221,0.3); transform: translateX(4px); }
+  .bm-icon-wrap { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 18px; }
+  .bm-icon-email { background: rgba(127,119,221,0.15); color: #9e8fcf; }
+  .bm-icon-ig    { background: rgba(212,83,126,0.13); color: #ed93b1; }
+  .bm-icon-li    { background: rgba(55,138,221,0.13); color: #85b7eb; }
+  .bm-contact-info { flex: 1; }
+  .bm-contact-label { font-size: 11px; color: #555454; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 2px; }
+  .bm-contact-value { font-size: 14px; color: #d4d2ce; }
+  .bm-arrow { font-size: 16px; color: #3c3a38; transition: color 0.2s, transform 0.2s; }
+  .bm-contact-row:hover .bm-arrow { color: #7f77dd; transform: translateX(2px); }
+  .bm-footer { font-size: 12px; color: #3c3a38; text-align: center; letter-spacing: 0.05em; }
+
+  .cursor-dot {
+    position: fixed; width: 14px; height: 14px; background: #ff3300; border-radius: 50%;
+    pointer-events: none; z-index: 9999; transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px 4px rgba(255,80,0,0.7);
+  }
+  .plant-floater { position: fixed; pointer-events: none; z-index: 9998; transform-origin: bottom center; will-change: transform; }
+
+  .war-particle {
+    position: fixed; pointer-events: none; z-index: 9997;
+    font-size: 16px; opacity: 0;
+    animation: warFloat 1.4s ease-out forwards;
+  }
+  @keyframes warFloat {
+    0%   { opacity:0; transform: translate(0,0) scale(0.4) rotate(0deg); }
+    15%  { opacity:1; transform: translate(0,-8px) scale(1.1) rotate(-10deg); }
+    80%  { opacity:0.9; }
+    100% { opacity:0; transform: translate(var(--px), var(--py)) scale(0.6) rotate(var(--pr)); }
+  }
+  .shockwave {
+    position: fixed; pointer-events: none; z-index: 9996;
+    border-radius: 50%; border: 3px solid rgba(255,120,0,0.8);
+    animation: shockwaveAnim 0.6s ease-out forwards;
+  }
+  @keyframes shockwaveAnim {
+    0%   { width:0; height:0; opacity:1; transform: translate(-50%,-50%); }
+    100% { width:120px; height:120px; opacity:0; transform: translate(-50%,-50%); }
+  }
+  .sketch-line {
+    position: fixed; pointer-events: none; z-index: 9995;
+    background: rgba(255,200,50,0.6); height: 2px; transform-origin: left center;
+    animation: lineFade 0.4s ease-out forwards;
+  }
+  @keyframes lineFade { 0%{opacity:0.8} 100%{opacity:0} }
+
+  /* BITE OVERLAY */
+  #bite-overlay {
+    position: fixed; inset: 0; z-index: 10000;
+    pointer-events: none; display: none;
+    animation: screenShake 0.5s ease-out;
+  }
+  @keyframes screenShake {
+    0%  { transform: translate(0,0); }
+    15% { transform: translate(-8px, 4px); }
+    30% { transform: translate(8px,-4px); }
+    45% { transform: translate(-5px, 6px); }
+    60% { transform: translate(5px,-3px); }
+    75% { transform: translate(-3px, 2px); }
+    100%{ transform: translate(0,0); }
+  }
+  #blood-splat {
+    position: fixed; pointer-events: none; z-index: 10001;
+    display: none; font-size: 48px;
+    animation: splatAnim 0.8s ease-out forwards;
+  }
+  @keyframes splatAnim {
+    0%  { opacity:0; transform: translate(-50%,-50%) scale(0.2) rotate(-20deg); }
+    30% { opacity:1; transform: translate(-50%,-50%) scale(1.3) rotate(5deg); }
+    70% { opacity:1; transform: translate(-50%,-50%) scale(1) rotate(0deg); }
+    100%{ opacity:0; transform: translate(-50%,-50%) scale(0.8) rotate(-5deg); }
+  }
+  #ouch-text {
+    position: fixed; pointer-events: none; z-index: 10002;
+    display: none; font-family: 'Permanent Marker', 'DM Sans', cursive;
+    font-size: 38px; font-weight: 900; color: #ff2200;
+    text-shadow: 3px 3px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
+    animation: ouchAnim 1.1s ease-out forwards;
+    white-space: nowrap;
+  }
+  @keyframes ouchAnim {
+    0%  { opacity:0; transform: translate(-50%,-50%) scale(0.3) rotate(-15deg); }
+    20% { opacity:1; transform: translate(-50%,-60%) scale(1.25) rotate(6deg); }
+    55% { opacity:1; transform: translate(-50%,-60%) scale(1) rotate(-3deg); }
+    100%{ opacity:0; transform: translate(-50%,-90%) scale(0.7) rotate(8deg); }
+  }
+  #bite-vignette {
+    position: fixed; inset: 0; z-index: 9990; pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(180,0,0,0.55) 100%);
+    opacity: 0; transition: opacity 0.15s;
+  }
+</style>
+
+<div class="bm-root" id="root">
+  <div class="bm-bg-mesh"></div>
+  <div class="bm-grain"></div>
+  <div id="bite-vignette"></div>
+  <div class="bm-wrap">
+    <div>
+      <p class="bm-eyebrow">Get in touch</p>
+      <h1 class="bm-name">Britain <span>Moore</span></h1>
+      <p class="bm-tagline">Let's connect — I'd love to hear from you.</p>
+      <div class="bm-divider"></div>
+    </div>
+    <div>
+      <p class="bm-section-label">Contact</p>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <a class="bm-contact-row" id="btn-email" href="mailto:britain.moore2@gmail.com">
+          <div class="bm-icon-wrap bm-icon-email"><i class="ti ti-mail" aria-hidden="true"></i></div>
+          <div class="bm-contact-info"><div class="bm-contact-label">Email</div><div class="bm-contact-value">britain.moore2@gmail.com</div></div>
+          <i class="ti ti-arrow-right bm-arrow" aria-hidden="true"></i>
+        </a>
+        <a class="bm-contact-row" id="btn-ig" href="https://www.instagram.com/britain0956?igsh=ZHB5N2Z0b2FobnAy&utm_source=qr" target="_blank" rel="noopener">
+          <div class="bm-icon-wrap bm-icon-ig"><i class="ti ti-brand-instagram" aria-hidden="true"></i></div>
+          <div class="bm-contact-info"><div class="bm-contact-label">Instagram</div><div class="bm-contact-value">@britain0956</div></div>
+          <i class="ti ti-arrow-right bm-arrow" aria-hidden="true"></i>
+        </a>
+        <a class="bm-contact-row" id="btn-li" href="https://www.linkedin.com/in/britain-moore-7742bb3b9?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank" rel="noopener">
+          <div class="bm-icon-wrap bm-icon-li"><i class="ti ti-brand-linkedin" aria-hidden="true"></i></div>
+          <div class="bm-contact-info"><div class="bm-contact-label">LinkedIn</div><div class="bm-contact-value">Britain Moore</div></div>
+          <i class="ti ti-arrow-right bm-arrow" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+    <p class="bm-footer">© 2026 Britain Moore</p>
+  </div>
+</div>
+
+<div class="cursor-dot" id="cursor"></div>
+<div id="bite-overlay"></div>
+<div id="blood-splat">🩸💥🩸</div>
+<div id="ouch-text">OW!! 🌿😤</div>
+
+<script>
+(function(){
+  const cursor = document.getElementById('cursor');
+  const biteOverlay = document.getElementById('bite-overlay');
+  const bloodSplat = document.getElementById('blood-splat');
+  const ouchText = document.getElementById('ouch-text');
+  const vignette = document.getElementById('bite-vignette');
+
+  const warGear = [
+    { helmet:'helmet',  weapon:'sword',  paint:'#cc3300', pot:'#5a6e3a', potDark:'#3a4a22', head:'#c0392b', headShade:'#8b1a10', collar:'#e8e0c0', collarDot:'#8b6914', cheek:'#d4a0a0', stem:'#4a7a3a', stemDark:'#2a5020', eyebrow:'angry' },
+    { helmet:'bandana', weapon:'spear',  paint:'#ff6600', pot:'#7a4a2a', potDark:'#5a2a0a', head:'#e8732a', headShade:'#a04010', collar:'#e8ddb0', collarDot:'#7a5010', cheek:'#f0b888', stem:'#4a7a3a', stemDark:'#2a5020', eyebrow:'angry' },
+    { helmet:'beret',   weapon:'bomb',   paint:'#009900', pot:'#2a3a2a', potDark:'#111a11', head:'#2d7a2d', headShade:'#1a4a1a', collar:'#d0e8d0', collarDot:'#1a6010', cheek:'#90cc90', stem:'#3a6a3a', stemDark:'#204020', eyebrow:'furious' },
+    { helmet:'helmet',  weapon:'axe',    paint:'#990000', pot:'#6a3a1a', potDark:'#4a1a00', head:'#b03020', headShade:'#7a1010', collar:'#e8d8b0', collarDot:'#8a5000', cheek:'#d09090', stem:'#4a7a3a', stemDark:'#2a5020', eyebrow:'furious' },
+    { helmet:'bandana', weapon:'sword',  paint:'#cc6600', pot:'#4a5a2a', potDark:'#2a3a0a', head:'#cc7722', headShade:'#884400', collar:'#e8e0b0', collarDot:'#7a5808', cheek:'#e8b880', stem:'#4a7a3a', stemDark:'#2a5020', eyebrow:'angry' },
+    { helmet:'beret',   weapon:'spear',  paint:'#006600', pot:'#3a3a1a', potDark:'#222200', head:'#556b2f', headShade:'#2a3a10', collar:'#d8e8c8', collarDot:'#304010', cheek:'#a8c898', stem:'#3a6a3a', stemDark:'#204020', eyebrow:'furious' },
+    { helmet:'helmet',  weapon:'bomb',   paint:'#aa2200', pot:'#5a4a1a', potDark:'#3a2a00', head:'#aa3322', headShade:'#6a1a10', collar:'#e8dca8', collarDot:'#7a4800', cheek:'#cc9888', stem:'#4a7a3a', stemDark:'#2a5020', eyebrow:'angry' },
+  ];
+
+  function ss(color,w=2.5){ return `stroke="${color}" stroke-width="${w}" fill="none" stroke-linecap="round" stroke-linejoin="round"`; }
+
+  function makePlant(g, idx) {
+    let helmetSVG = '';
+    if(g.helmet==='helmet'){
+      helmetSVG=`<ellipse cx="36" cy="6" rx="20" ry="10" fill="#5a5a3a" ${ss('#222',2)}/><rect x="16" y="10" width="40" height="5" rx="2" fill="#4a4a2a" ${ss('#222',1.5)}/><line x1="22" y1="8" x2="24" y2="3" ${ss('#333',1.2)}/><line x1="36" y1="5" x2="36" y2="1" ${ss('#333',1.2)}/><line x1="50" y1="8" x2="48" y2="3" ${ss('#333',1.2)}/>`;
+    } else if(g.helmet==='bandana'){
+      helmetSVG=`<path d="M16 10 Q36 2 56 10 Q52 4 36 2 Q20 4 16 10Z" fill="#cc2200" ${ss('#222',1.8)}/><path d="M52 8 Q58 12 56 16" ${ss('#cc2200',2)} fill="none"/><path d="M20 8 Q14 12 16 16" ${ss('#cc2200',2)} fill="none"/>`;
+    } else {
+      helmetSVG=`<path d="M20 12 Q26 0 46 4 Q50 14 46 14 Q36 8 20 12Z" fill="#2a3a2a" ${ss('#111',2)}/><line x1="44" y1="6" x2="54" y2="4" ${ss('#2a3a2a',2.5)}/>`;
+    }
+    let weaponSVG = '';
+    if(g.weapon==='sword'){
+      weaponSVG=`<g transform="translate(58,30) rotate(35)"><rect x="-2" y="-22" width="4" height="22" rx="1" fill="#aaaaaa" ${ss('#333',1.5)}/><rect x="-6" y="-2" width="12" height="3" rx="1" fill="#8b6914" ${ss('#333',1.2)}/><rect x="-3" y="0" width="6" height="8" rx="1" fill="#6b4a14" ${ss('#333',1.2)}/><line x1="0" y1="-22" x2="0" y2="-28" ${ss('#cccccc',1.5)}/><path d="M-2 -22 Q0 -26 2 -22" fill="#cccccc" ${ss('#888',1)}/></g>`;
+    } else if(g.weapon==='spear'){
+      weaponSVG=`<g transform="translate(60,18) rotate(20)"><line x1="0" y1="0" x2="0" y2="45" ${ss('#8b5a2a',3)}/><polygon points="0,-18 -5,0 5,0" fill="#aaaaaa" ${ss('#333',1.5)}/><line x1="-8" y1="5" x2="8" y2="5" ${ss('#6b3a0a',2)}/></g>`;
+    } else if(g.weapon==='bomb'){
+      weaponSVG=`<g transform="translate(58,35)"><circle cx="0" cy="0" r="11" fill="#222" ${ss('#111',2)}/><line x1="0" y1="-11" x2="4" y2="-18" ${ss('#8b6914',2.5)}/><path d="M4 -18 Q8 -22 6 -16" fill="#ff8800" ${ss('#ff6600',1.5)}/></g>`;
+    } else {
+      weaponSVG=`<g transform="translate(57,28) rotate(15)"><line x1="0" y1="0" x2="0" y2="38" ${ss('#6b4a14',3)}/><path d="M0,-5 Q12,-14 14,-2 Q12,8 0,5Z" fill="#888" ${ss('#333',1.8)}/><path d="M0,-2 Q-8,-10 -10,0 Q-8,8 0,5Z" fill="#777" ${ss('#333',1.5)}/></g>`;
+    }
+    const browL = g.eyebrow==='furious' ? `<path d="M18 10 Q22 5 26 9" ${ss('#111',3)} fill="none"/>` : `<path d="M19 10 Q23 7 27 10" ${ss('#111',2.5)} fill="none"/>`;
+    const browR = g.eyebrow==='furious' ? `<path d="M46 9 Q50 5 54 10" ${ss('#111',3)} fill="none"/>` : `<path d="M45 10 Q49 7 53 10" ${ss('#111',2.5)} fill="none"/>`;
+
+    return `<svg class="plant-svg" width="88" height="115" viewBox="0 0 88 115" xmlns="http://www.w3.org/2000/svg">
+      ${idx===0?`<defs><filter id="sketch" x="-5%" y="-5%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="4" seed="3" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="2.2" xChannelSelector="R" yChannelSelector="G"/></filter></defs>`:''}
+      <g filter="${idx===0?'url(#sketch)':''}">
+      <path d="M24 88 Q22 112 20 115 L64 115 Q62 112 60 88Z" fill="${g.pot}" ${ss('#111',2.2)}/>
+      <rect x="18" y="84" width="48" height="9" rx="3" fill="${g.potDark}" ${ss('#111',2)}/>
+      <line x1="26" y1="92" x2="24" y2="112" ${ss('rgba(0,0,0,0.18)',1.2)}/>
+      <line x1="40" y1="90" x2="40" y2="114" ${ss('rgba(0,0,0,0.10)',1)}/>
+      <line x1="24" y1="100" x2="60" y2="100" ${ss('rgba(0,0,0,0.2)',1.2)}/>
+      <path d="M40 84 Q30 70 33 55 Q36 40 44 30" ${ss(g.stemDark,7)} fill="none"/>
+      <path d="M40 84 Q30 70 33 55 Q36 40 44 30" ${ss(g.stem,5)} fill="none"/>
+      <g class="leaf-l"><path d="M34 62 Q18 54 14 44 Q20 42 34 55Z" fill="${g.stemDark}" ${ss('#111',1.8)}/><path d="M34 62 Q18 54 14 44 Q20 42 34 55Z" fill="${g.stem}" ${ss(g.stemDark,1)}/></g>
+      <g class="leaf-r"><path d="M36 54 Q52 44 58 34 Q52 30 36 47Z" fill="${g.stemDark}" ${ss('#111',1.8)}/><path d="M36 54 Q52 44 58 34 Q52 30 36 47Z" fill="${g.stem}" ${ss(g.stemDark,1)}/></g>
+      <path d="M20 32 Q44 40 68 32 Q60 22 44 22 Q28 22 20 32Z" fill="${g.collar}" ${ss('#111',2)}/>
+      <circle cx="24" cy="30" r="2.5" fill="${g.collarDot}" ${ss('#111',1)}/>
+      <circle cx="34" cy="26" r="2.5" fill="${g.collarDot}" ${ss('#111',1)}/>
+      <circle cx="44" cy="24" r="2.5" fill="${g.collarDot}" ${ss('#111',1)}/>
+      <circle cx="54" cy="26" r="2.5" fill="${g.collarDot}" ${ss('#111',1)}/>
+      <circle cx="64" cy="30" r="2.5" fill="${g.collarDot}" ${ss('#111',1)}/>
+      <!-- HEAD -->
+      <path class="head-top" d="M22 20 Q22 -2 44 -2 Q66 -2 66 20 Q68 36 44 38 Q20 38 22 20Z" fill="${g.head}" ${ss('#111',2.5)}/>
+      <!-- war paint -->
+      <path d="M22 18 Q28 20 30 24" ${ss(g.paint,2.5)} fill="none"/>
+      <path d="M23 24 Q29 26 31 28" ${ss(g.paint,2)} fill="none"/>
+      <path d="M58 18 Q52 20 50 24" ${ss(g.paint,2.5)} fill="none"/>
+      <path d="M57 24 Q51 26 49 28" ${ss(g.paint,2)} fill="none"/>
+      <!-- MOUTH (normal = open aggressive) -->
+      <g class="mouth-normal">
+        <path d="M24 26 Q44 44 64 26" fill="${g.headShade}" ${ss('#111',2)}/>
+        <path d="M34 36 Q44 44 54 36 Q44 40 34 36Z" fill="#cc2244" ${ss('#881122',1.5)}/>
+        <line x1="44" y1="36" x2="44" y2="42" ${ss('#881122',1.2)}/>
+        <path d="M26 24 L29 24 L29 34 L26 34Z" fill="white" ${ss('#333',1.5)}/>
+        <path d="M31 22 L35 22 L35 34 L31 34Z" fill="white" ${ss('#333',1.5)}/>
+        <path d="M37 21 L41 21 L41 34 L37 34Z" fill="white" ${ss('#333',1.5)}/>
+        <path d="M43 21 L47 21 L47 34 L43 34Z" fill="white" ${ss('#333',1.5)}/>
+        <path d="M49 22 L53 22 L53 34 L49 34Z" fill="white" ${ss('#333',1.5)}/>
+        <path d="M55 24 L58 24 L58 34 L55 34Z" fill="white" ${ss('#333',1.5)}/>
+        <path d="M30 34 L33 34 L33 28 L30 28Z" fill="#f0f0e0" ${ss('#333',1.2)}/>
+        <path d="M36 34 L39 34 L39 27 L36 27Z" fill="#f0f0e0" ${ss('#333',1.2)}/>
+        <path d="M42 34 L45 34 L45 27 L42 27Z" fill="#f0f0e0" ${ss('#333',1.2)}/>
+        <path d="M48 34 L51 34 L51 28 L48 28Z" fill="#f0f0e0" ${ss('#333',1.2)}/>
+      </g>
+      <!-- MOUTH BITE (closed snap) — hidden by default -->
+      <g class="mouth-bite" style="display:none">
+        <path d="M24 26 Q44 28 64 26" fill="${g.headShade}" ${ss('#111',2)}/>
+        <path d="M26 24 L29 24 L29 29 L26 29Z" fill="white" ${ss('#333',1.5)}/>
+        <path d="M31 22 L35 22 L35 28 L31 28Z" fill="white" ${ss('#333',1.5)}/>
+        <path d="M37 21 L41 21 L41 28 L37 28Z" fill="white" ${ss('#333',1.5)}/>
+        <path d="M43 21 L47 21 L47 28 L43 28Z" fill="white" ${ss('#333',1.5)}/>
+        <path d="M49 22 L53 22 L53 29 L49 29Z" fill="white" ${ss('#333',1.5)}/>
+        <path d="M55 24 L58 24 L58 29 L55 29Z" fill="white" ${ss('#333',1.5)}/>
+        <path d="M30 28 L33 28 L33 24 L30 24Z" fill="#f0f0e0" ${ss('#333',1.2)}/>
+        <path d="M36 28 L39 28 L39 24 L36 24Z" fill="#f0f0e0" ${ss('#333',1.2)}/>
+        <path d="M42 28 L45 28 L45 24 L42 24Z" fill="#f0f0e0" ${ss('#333',1.2)}/>
+        <path d="M48 28 L51 28 L51 24 L48 24Z" fill="#f0f0e0" ${ss('#333',1.2)}/>
+      </g>
+      <!-- eyes -->
+      ${browL}${browR}
+      <ellipse cx="28" cy="16" rx="6" ry="5" fill="white" ${ss('#111',1.8)}/>
+      <ellipse cx="52" cy="16" rx="6" ry="5" fill="white" ${ss('#111',1.8)}/>
+      <circle class="iris-l" cx="28" cy="17" r="3.5" fill="#1a1a1a"/>
+      <circle class="iris-r" cx="52" cy="17" r="3.5" fill="#1a1a1a"/>
+      <circle cx="29" cy="17" r="2" fill="#000"/>
+      <circle cx="53" cy="17" r="2" fill="#000"/>
+      <circle cx="27" cy="15" r="1.2" fill="rgba(255,255,255,0.7)"/>
+      <circle cx="51" cy="15" r="1.2" fill="rgba(255,255,255,0.7)"/>
+      <line x1="23" y1="14" x2="25" y2="16" ${ss('#cc2200',0.8)}/>
+      <line x1="33" y1="14" x2="31" y2="16" ${ss('#cc2200',0.8)}/>
+      <path d="M66 14 Q68 10 70 14 Q70 18 66 14Z" fill="#88aaff" opacity="0.7" ${ss('#4466cc',1)}/>
+      ${helmetSVG}
+      ${weaponSVG}
+      </g>
+    </svg>`;
+  }
+
+  const NUM = 7;
+  const plants = [];
+  const warSymbols = ['💥','⚔️','💢','🔥','☠️','💣','⚡'];
+  const ouchPhrases = ['OW!!😤','OUCH!😡','CHOMPED!😱','IT BIT ME!!😤','RUDE!!😠'];
+
+  for(let i=0;i<NUM;i++){
+    const g = warGear[i%warGear.length];
+    const el = document.createElement('div');
+    el.className='plant-floater';
+    el.innerHTML=makePlant(g,i);
+    document.body.appendChild(el);
+    plants.push({
+      el,g,
+      x:window.innerWidth/2+(i-(NUM-1)/2)*90,
+      y:window.innerHeight/2,
+      vx:0,vy:0,
+      lag:0.042+i*0.016,
+      wobble:i*1.3, wobbleSpeed:0.08+i*0.006, wobbleAmp:5+i*1.2,
+      bounce:i*0.9, bounceSpeed:0.11+i*0.005, bounceAmp:9+i,
+      tilt:0, squish:0, squishV:0,
+      dance:i*0.6, danceSpeed:0.13+i*0.004,
+      warTimer:Math.random()*60+20,
+      scalePulse:i*0.5,
+      blinkTimer:80+Math.random()*120, blinkOpen:true,
+      biting:false, biteTimer:0,
+      lunge:0, lungeTarget:0,
+    });
+  }
+
+  let mx=window.innerWidth/2, my=window.innerHeight/2;
+  let pmx=mx, pmy=my, speed=0;
+
+  document.addEventListener('mousemove',e=>{
+    pmx=mx;pmy=my;mx=e.clientX;my=e.clientY;
+    speed=Math.sqrt((mx-pmx)**2+(my-pmy)**2);
+    cursor.style.left=mx+'px';cursor.style.top=my+'px';
+    if(speed>18) spawnSlashTrail(pmx,pmy,mx,my);
+  });
+
+  function lerp(a,b,t){return a+(b-a)*t;}
+
+  function spawnWarParticle(x,y){
+    const el=document.createElement('div');
+    el.className='war-particle';
+    el.textContent=warSymbols[Math.floor(Math.random()*warSymbols.length)];
+    el.style.left=x+'px';el.style.top=y+'px';
+    const px=(Math.random()-0.5)*80, py=-(20+Math.random()*50), pr=(Math.random()-0.5)*90+'deg';
+    el.style.setProperty('--px',px+'px');el.style.setProperty('--py',py+'px');el.style.setProperty('--pr',pr);
+    document.body.appendChild(el);setTimeout(()=>el.remove(),1500);
+  }
+  function spawnShockwave(x,y){
+    const el=document.createElement('div');el.className='shockwave';
+    el.style.left=x+'px';el.style.top=y+'px';
+    document.body.appendChild(el);setTimeout(()=>el.remove(),650);
+  }
+  function spawnSlashTrail(x1,y1,x2,y2){
+    const el=document.createElement('div');el.className='sketch-line';
+    const len=Math.sqrt((x2-x1)**2+(y2-y1)**2);
+    const angle=Math.atan2(y2-y1,x2-x1)*180/Math.PI;
+    el.style.width=len+'px';el.style.left=x1+'px';el.style.top=y1+'px';
+    el.style.transform=`rotate(${angle}deg)`;
+    document.body.appendChild(el);setTimeout(()=>el.remove(),420);
+  }
+
+  // ── BITE TRIGGER ──
+  function triggerBite(btnEl) {
+    // pick a random plant
+    const biterIdx = Math.floor(Math.random()*NUM);
+    const biter = plants[biterIdx];
+
+    // get button center
+    const rect = btnEl.getBoundingClientRect();
+    const bx = rect.left + rect.width/2;
+    const by = rect.top + rect.height/2;
+
+    biter.biting = true;
+    biter.biteTimer = 60; // frames
+    biter.biteTargetX = bx;
+    biter.biteTargetY = by;
+    biter.bitePhase = 'lunge'; // lunge → snap → retreat
+
+    // show bite mouth
+    const svg = biter.el.querySelector('svg');
+    svg.querySelector('.mouth-normal').style.display='none';
+    svg.querySelector('.mouth-bite').style.display='';
+    // make eyes go wide/angry
+    const irisL=svg.querySelector('.iris-l');
+    const irisR=svg.querySelector('.iris-r');
+    if(irisL){irisL.setAttribute('fill','#ff0000');irisR.setAttribute('fill','#ff0000');}
+
+    // show bite FX on button
+    const phrase = ouchPhrases[Math.floor(Math.random()*ouchPhrases.length)];
+    bloodSplat.style.display='block';
+    bloodSplat.style.left=bx+'px';bloodSplat.style.top=by+'px';
+    bloodSplat.style.animation='none';
+    void bloodSplat.offsetWidth;
+    bloodSplat.style.animation='splatAnim 0.8s ease-out forwards';
+
+    ouchText.textContent=phrase;
+    ouchText.style.display='block';
+    ouchText.style.left=bx+'px';ouchText.style.top=(by-20)+'px';
+    ouchText.style.animation='none';
+    void ouchText.offsetWidth;
+    ouchText.style.animation='ouchAnim 1.1s ease-out forwards';
+
+    biteOverlay.style.display='block';
+    biteOverlay.style.animation='none';
+    void biteOverlay.offsetWidth;
+    biteOverlay.style.animation='screenShake 0.5s ease-out';
+
+    vignette.style.opacity='1';
+    setTimeout(()=>vignette.style.opacity='0',400);
+
+    spawnShockwave(bx,by);
+    for(let i=0;i<5;i++) setTimeout(()=>spawnWarParticle(bx+(Math.random()-0.5)*60,by+(Math.random()-0.5)*40),i*60);
+
+    setTimeout(()=>{
+      bloodSplat.style.display='none';
+      ouchText.style.display='none';
+      biteOverlay.style.display='none';
+    },1200);
+
+    // retreat after bite
+    setTimeout(()=>{
+      biter.biting=false;
+      biter.bitePhase='retreat';
+      const s=biter.el.querySelector('svg');
+      s.querySelector('.mouth-normal').style.display='';
+      s.querySelector('.mouth-bite').style.display='none';
+      const il=s.querySelector('.iris-l');const ir=s.querySelector('.iris-r');
+      if(il){il.setAttribute('fill','#1a1a1a');ir.setAttribute('fill','#1a1a1a');}
+    },500);
+  }
+
+  // attach to buttons — use mousedown to catch before navigation
+  ['btn-email','btn-ig','btn-li'].forEach(id=>{
+    const btn=document.getElementById(id);
+    if(!btn)return;
+    btn.addEventListener('click',e=>{
+      triggerBite(btn);
+    });
+  });
+
+  let frame=0;
+  function animate(){
+    frame++;
+    let tx=mx,ty=my;
+    for(let i=0;i<plants.length;i++){
+      const p=plants[i];
+
+      // biting lunge override
+      if(p.biting && p.bitePhase==='lunge'){
+        p.x=lerp(p.x,p.biteTargetX,0.18);
+        p.y=lerp(p.y,p.biteTargetY,0.18);
+      } else {
+        const dx=tx-p.x,dy=ty-p.y;
+        p.vx=lerp(p.vx,dx*p.lag,0.22);
+        p.vy=lerp(p.vy,dy*p.lag,0.22);
+        p.x+=p.vx;p.y+=p.vy;
+      }
+
+      p.wobble+=p.wobbleSpeed;
+      const wx=p.biting?0:Math.sin(p.wobble)*p.wobbleAmp;
+      p.bounce+=p.bounceSpeed;
+      const rawBounce=Math.sin(p.bounce);
+      const marchBounce=rawBounce>0?Math.pow(rawBounce,0.4):-Math.pow(-rawBounce,2.5);
+      const by2=-Math.abs(marchBounce)*p.bounceAmp;
+      if(rawBounce>0.92){p.squishV=-0.35;}
+      p.squishV+=0.05;p.squish=Math.max(-0.3,Math.min(0.2,p.squish+p.squishV));
+      const sx=1+p.squish*0.5,sy=1-p.squish;
+      const velTilt=Math.max(-30,Math.min(30,p.vx*2.2));
+      const aggressiveLean=Math.sin(p.wobble*0.7)*10;
+      p.tilt=lerp(p.tilt,p.biting?0:(velTilt+aggressiveLean),0.1);
+      p.dance+=p.danceSpeed;
+      const marchArm=Math.sin(p.dance)*22;
+      const leafL=p.el.querySelector('.leaf-l');
+      const leafR=p.el.querySelector('.leaf-r');
+      if(leafL)leafL.setAttribute('transform',`rotate(${marchArm},34,62)`);
+      if(leafR)leafR.setAttribute('transform',`rotate(${-marchArm},36,54)`);
+      p.scalePulse+=0.09;
+      const breathe=1+Math.sin(p.scalePulse)*0.03;
+      const biteScale=p.biting?1.3:1;
+      p.warTimer--;
+      if(p.warTimer<=0){p.warTimer=50+Math.random()*90;spawnWarParticle(p.x+10,p.y-90);}
+      p.blinkTimer--;
+      if(p.blinkTimer<=0){
+        p.blinkOpen=!p.blinkOpen;
+        p.blinkTimer=p.blinkOpen?(70+Math.random()*130):4;
+        if(!p.biting){
+          const eyes=p.el.querySelectorAll('ellipse[fill="white"]');
+          eyes.forEach(e=>e.style.opacity=p.blinkOpen?'1':'0');
+        }
+      }
+      p.el.style.left=(p.x+wx-44)+'px';
+      p.el.style.top=(p.y+by2-105)+'px';
+      p.el.style.transform=`rotate(${p.tilt}deg) scaleX(${sx*breathe*biteScale}) scaleY(${sy*breathe*biteScale})`;
+      p.el.style.filter=p.biting?'brightness(1.8) saturate(2) drop-shadow(0 0 8px #ff2200)':'';
+      tx=p.x;ty=p.y;
+    }
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+})();
+</script>
