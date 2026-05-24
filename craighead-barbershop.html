@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Craighead Barber Shop – Nashville, TN</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Oswald:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:   #f5f0e8;
+      --offwhite:#faf8f3;
+      --red:     #c0392b;
+      --darkred: #8b1a12;
+      --navy:    #1a2340;
+      --gold:    #c9a84c;
+      --charcoal:#2c2c2c;
+      --mid:     #5a5a5a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--charcoal);
+      font-family: 'Libre Baskerville', Georgia, serif;
+      overflow-x: hidden;
+    }
+
+    /* ── STRIPE HEADER ── */
+    .barber-pole-top {
+      height: 8px;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--red) 0px, var(--red) 12px,
+        #fff 12px, #fff 24px,
+        var(--navy) 24px, var(--navy) 36px
+      );
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--navy);
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    nav a {
+      color: var(--cream);
+      text-decoration: none;
+      font-family: 'Oswald', sans-serif;
+      font-size: .85rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      transition: color .2s;
+    }
+    nav a:hover { color: var(--gold); }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--navy);
+      color: var(--cream);
+      text-align: center;
+      padding: 6rem 2rem 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 50%, rgba(192,57,43,.18) 0%, transparent 60%),
+        radial-gradient(circle at 80% 30%, rgba(201,168,76,.12) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    /* subtle crosshatch texture */
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, rgba(255,255,255,.03) 0px, rgba(255,255,255,.03) 1px, transparent 1px, transparent 20px),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.03) 0px, rgba(255,255,255,.03) 1px, transparent 1px, transparent 20px);
+      pointer-events: none;
+    }
+    .hero-inner { position: relative; z-index: 1; }
+
+    .scissors-icon {
+      font-size: 2rem;
+      letter-spacing: .6em;
+      margin-bottom: 1.2rem;
+      display: block;
+      opacity: .7;
+      animation: fadeDown .8s ease both;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -.01em;
+      animation: fadeDown .9s .1s ease both;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--gold);
+    }
+    .hero-rule {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin: 1.6rem auto;
+      animation: fadeDown 1s .2s ease both;
+    }
+    .hero-rule span { height: 1px; width: 80px; background: var(--gold); display: block; }
+    .hero-rule em { font-family: 'Oswald', sans-serif; font-size: .75rem; letter-spacing: .25em; text-transform: uppercase; color: var(--gold); font-style: normal; }
+
+    .hero-sub {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      opacity: .75;
+      animation: fadeDown 1s .3s ease both;
+    }
+    .hero-est {
+      margin-top: .5rem;
+      font-family: 'Libre Baskerville', serif;
+      font-style: italic;
+      font-size: .9rem;
+      color: var(--gold);
+      animation: fadeDown 1s .4s ease both;
+    }
+    .hero-cta {
+      margin-top: 2.5rem;
+      display: inline-block;
+      background: var(--red);
+      color: #fff;
+      font-family: 'Oswald', sans-serif;
+      font-size: .85rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: .85rem 2.2rem;
+      border: 2px solid var(--red);
+      transition: background .2s, color .2s;
+      animation: fadeDown 1s .5s ease both;
+    }
+    .hero-cta:hover { background: transparent; color: var(--red); }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── SECTION SHARED ── */
+    section { padding: 5rem 2rem; }
+    .section-label {
+      font-family: 'Oswald', sans-serif;
+      font-size: .72rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: .5rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.1;
+    }
+    .divider {
+      width: 52px; height: 3px;
+      background: var(--gold);
+      margin: 1.2rem 0 2rem;
+    }
+
+    /* ── INFO BAND ── */
+    .info-band {
+      background: var(--red);
+      color: #fff;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0;
+    }
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      padding: 1.4rem 2.4rem;
+      border-right: 1px solid rgba(255,255,255,.2);
+      font-family: 'Oswald', sans-serif;
+      font-size: .85rem;
+      letter-spacing: .08em;
+      text-decoration: none;
+      color: #fff;
+      transition: background .2s;
+    }
+    .info-item:last-child { border-right: none; }
+    .info-item:hover { background: var(--darkred); }
+    .info-icon { font-size: 1.1rem; opacity: .85; }
+
+    /* ── ABOUT ── */
+    .about-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+    .about-text p {
+      line-height: 1.8;
+      color: var(--mid);
+      margin-bottom: 1.2rem;
+    }
+    .about-graphic {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .pole-svg {
+      width: 100px;
+      filter: drop-shadow(4px 8px 24px rgba(0,0,0,.18));
+    }
+
+    /* ── HOURS ── */
+    .hours-section {
+      background: var(--navy);
+      color: var(--cream);
+    }
+    .hours-inner {
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .hours-inner .section-label { color: var(--gold); }
+    .hours-inner .divider { margin: 1.2rem auto 2rem; }
+    .hours-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .5rem 3rem;
+      text-align: left;
+      max-width: 420px;
+      margin: 0 auto 2rem;
+    }
+    .hours-row {
+      display: contents;
+    }
+    .hours-day {
+      font-family: 'Oswald', sans-serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: .85rem;
+      padding: .5rem 0;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+      color: var(--gold);
+    }
+    .hours-time {
+      padding: .5rem 0;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+      font-size: .9rem;
+      opacity: .85;
+    }
+    .open-badge {
+      display: inline-block;
+      background: #1e7a3e;
+      color: #fff;
+      font-family: 'Oswald', sans-serif;
+      font-size: .75rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      padding: .35rem 1rem;
+      border-radius: 2px;
+      margin-top: 1rem;
+    }
+
+    /* ── REVIEWS ── */
+    .reviews-section { background: var(--offwhite); }
+    .reviews-inner { max-width: 1100px; margin: 0 auto; }
+    .stars-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+    .big-rating {
+      font-family: 'Playfair Display', serif;
+      font-size: 4rem;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--charcoal);
+    }
+    .stars { color: var(--gold); font-size: 1.3rem; letter-spacing: .1em; }
+    .review-count { font-family: 'Oswald', sans-serif; letter-spacing: .12em; color: var(--mid); font-size: .85rem; }
+
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.8rem;
+    }
+    .review-card {
+      background: #fff;
+      border-left: 4px solid var(--gold);
+      padding: 1.8rem;
+      box-shadow: 0 2px 16px rgba(0,0,0,.06);
+      position: relative;
+    }
+    .review-card::before {
+      content: '\201C';
+      font-family: 'Playfair Display', serif;
+      font-size: 5rem;
+      line-height: .8;
+      color: var(--cream);
+      position: absolute;
+      top: 1rem;
+      right: 1.2rem;
+    }
+    .review-stars { color: var(--gold); margin-bottom: .8rem; font-size: .95rem; }
+    .review-text {
+      font-style: italic;
+      line-height: 1.75;
+      color: var(--mid);
+      font-size: .92rem;
+      position: relative;
+      z-index: 1;
+    }
+    .review-author {
+      margin-top: 1rem;
+      font-family: 'Oswald', sans-serif;
+      font-size: .75rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--charcoal);
+    }
+
+    /* ── MAP / CONTACT ── */
+    .contact-section {
+      background: var(--cream);
+    }
+    .contact-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+    .contact-details p {
+      line-height: 1.9;
+      color: var(--mid);
+      margin-bottom: 1rem;
+    }
+    .contact-details a {
+      color: var(--red);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .contact-details a:hover { text-decoration: underline; }
+    .map-embed {
+      border: 4px solid var(--navy);
+      overflow: hidden;
+      height: 320px;
+    }
+    .map-embed iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .cta-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+    .btn {
+      display: inline-block;
+      font-family: 'Oswald', sans-serif;
+      font-size: .8rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: .8rem 1.8rem;
+      border: 2px solid var(--navy);
+      color: var(--navy);
+      transition: background .2s, color .2s;
+    }
+    .btn:hover { background: var(--navy); color: #fff; }
+    .btn-primary { background: var(--navy); color: #fff; }
+    .btn-primary:hover { background: var(--charcoal); border-color: var(--charcoal); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--charcoal);
+      color: rgba(255,255,255,.5);
+      text-align: center;
+      padding: 2.5rem 1rem;
+      font-family: 'Oswald', sans-serif;
+      font-size: .75rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+    footer span { color: var(--gold); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 700px) {
+      .about-wrap, .contact-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .about-graphic { display: none; }
+      nav { gap: 1.5rem; flex-wrap: wrap; }
+      .info-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,.15); width: 100%; justify-content: center; }
+      .hours-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="barber-pole-top"></div>
+
+<nav>
+  <a href="#about">About</a>
+  <a href="#hours">Hours</a>
+  <a href="#reviews">Reviews</a>
+  <a href="#contact">Find Us</a>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-inner">
+    <span class="scissors-icon">✂ &nbsp; ✂ &nbsp; ✂</span>
+    <h1>Craighead<br><em>Barber Shop</em></h1>
+    <div class="hero-rule">
+      <span></span><em>Est. Nashville, TN</em><span></span>
+    </div>
+    <p class="hero-sub">Jefferson Street &bull; Nashville, Tennessee</p>
+    <p class="hero-est">One of the best barbers on Jefferson St.</p>
+    <a class="hero-cta" href="tel:6153229964">Call to Book &rarr;</a>
+  </div>
+</header>
+
+<!-- INFO BAND -->
+<div class="info-band">
+  <a class="info-item" href="tel:6153229964">
+    <span class="info-icon">📞</span> (615) 322-9964
+  </a>
+  <span class="info-item">
+    <span class="info-icon">📍</span> 1505 Jefferson St #A, Nashville, TN 37208
+  </span>
+  <span class="info-item">
+    <span class="info-icon">🕐</span> Open 24 Hours · 7 Days
+  </span>
+  <span class="info-item">
+    <span class="info-icon">⭐</span> 4.7 Rating · Walk-Ins Welcome
+  </span>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-wrap">
+    <div class="about-text">
+      <p class="section-label">Our Story</p>
+      <h2 class="section-title">A Nashville Classic on Jefferson Street</h2>
+      <div class="divider"></div>
+      <p>Craighead Barber Shop is a historic landmark on Nashville's storied Jefferson Street — a neighborhood institution where great cuts and good conversation have always gone hand in hand.</p>
+      <p>Owner Joe is known throughout the community as one of the friendliest, most professional barbers around. Whether you're a regular or walking in for the first time, you'll be treated like family — no long waits, fair prices, and a welcoming atmosphere every single visit.</p>
+      <p>We're proud to be part of Nashville's history and to keep the classic barbershop tradition alive.</p>
+    </div>
+    <div class="about-graphic">
+      <!-- Barber pole SVG -->
+      <svg class="pole-svg" viewBox="0 0 100 280" xmlns="http://www.w3.org/2000/svg">
+        <!-- pole cap top -->
+        <rect x="30" y="0" width="40" height="14" rx="4" fill="#c9a84c"/>
+        <!-- pole body -->
+        <rect x="35" y="14" width="30" height="252" rx="0" fill="#f5f0e8" stroke="#ccc" stroke-width="1"/>
+        <!-- stripes -->
+        <clipPath id="poleClip">
+          <rect x="35" y="14" width="30" height="252"/>
+        </clipPath>
+        <g clip-path="url(#poleClip)">
+          <!-- red diagonal stripes -->
+          <line x1="5"  y1="14"  x2="95" y2="104" stroke="#c0392b" stroke-width="14"/>
+          <line x1="5"  y1="54"  x2="95" y2="144" stroke="#c0392b" stroke-width="14"/>
+          <line x1="5"  y1="94"  x2="95" y2="184" stroke="#c0392b" stroke-width="14"/>
+          <line x1="5"  y1="134" x2="95" y2="224" stroke="#c0392b" stroke-width="14"/>
+          <line x1="5"  y1="174" x2="95" y2="264" stroke="#c0392b" stroke-width="14"/>
+          <line x1="5"  y1="214" x2="95" y2="304" stroke="#c0392b" stroke-width="14"/>
+          <!-- blue diagonal stripes -->
+          <line x1="5"  y1="28"  x2="95" y2="118" stroke="#1a2340" stroke-width="7"/>
+          <line x1="5"  y1="68"  x2="95" y2="158" stroke="#1a2340" stroke-width="7"/>
+          <line x1="5"  y1="108" x2="95" y2="198" stroke="#1a2340" stroke-width="7"/>
+          <line x1="5"  y1="148" x2="95" y2="238" stroke="#1a2340" stroke-width="7"/>
+          <line x1="5"  y1="188" x2="95" y2="278" stroke="#1a2340" stroke-width="7"/>
+          <line x1="5"  y1="228" x2="95" y2="318" stroke="#1a2340" stroke-width="7"/>
+        </g>
+        <!-- pole outline -->
+        <rect x="35" y="14" width="30" height="252" fill="none" stroke="#aaa" stroke-width="1"/>
+        <!-- pole cap bottom -->
+        <rect x="30" y="266" width="40" height="14" rx="4" fill="#c9a84c"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- HOURS -->
+<section id="hours" class="hours-section">
+  <div class="hours-inner">
+    <p class="section-label">When to Visit</p>
+    <h2 class="section-title" style="color:var(--cream)">Hours &amp; Availability</h2>
+    <div class="divider"></div>
+    <div class="hours-grid">
+      <div class="hours-day">Monday</div><div class="hours-time">Open 24 Hours</div>
+      <div class="hours-day">Tuesday</div><div class="hours-time">Open 24 Hours</div>
+      <div class="hours-day">Wednesday</div><div class="hours-time">Open 24 Hours</div>
+      <div class="hours-day">Thursday</div><div class="hours-time">Open 24 Hours</div>
+      <div class="hours-day">Friday</div><div class="hours-time">Open 24 Hours</div>
+      <div class="hours-day">Saturday</div><div class="hours-time">Open 24 Hours</div>
+      <div class="hours-day">Sunday</div><div class="hours-time">Open 24 Hours</div>
+    </div>
+    <span class="open-badge">✓ Open Now · Walk-Ins Welcome</span>
+    <p style="margin-top:1.5rem; opacity:.6; font-size:.85rem; font-style:italic;">Call ahead to confirm same-day availability.</p>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews" class="reviews-section">
+  <div class="reviews-inner">
+    <p class="section-label">What People Say</p>
+    <h2 class="section-title">Customer Reviews</h2>
+    <div class="divider"></div>
+    <div class="stars-header">
+      <span class="big-rating">4.7</span>
+      <div>
+        <div class="stars">★★★★★</div>
+        <div class="review-count">27 Google Reviews</div>
+      </div>
+    </div>
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">Excellent service I couldn't ask for more. Prices are fair and very reasonable. Friendly environment — no long wait times.</p>
+        <p class="review-author">— Google Reviewer</p>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">Great place to get a haircut — also a historic barbershop. A real gem on Jefferson Street.</p>
+        <p class="review-author">— Google Reviewer</p>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">Top tier professionalism, very accommodating and kind. You won't find a friendlier, more professional barber than Joe.</p>
+        <p class="review-author">— Google Reviewer</p>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">Cool place, good atmosphere. They stay open late as well — super convenient when you need a cut on your schedule.</p>
+        <p class="review-author">— Google Reviewer</p>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">Great place to get a haircut. Very professional and no long wait times. Takes walk-ins — highly recommend.</p>
+        <p class="review-author">— Google Reviewer</p>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">One of the best barbers on Jefferson St. Go see for yourself — Joe is really a nice man who takes pride in every cut.</p>
+        <p class="review-author">— Google Reviewer</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact-section">
+  <div class="contact-inner">
+    <div class="contact-details">
+      <p class="section-label">Find Us</p>
+      <h2 class="section-title">Location &amp; Contact</h2>
+      <div class="divider"></div>
+      <p>
+        <strong>Address</strong><br>
+        1505 Jefferson St, Suite A<br>
+        Nashville, TN 37208
+      </p>
+      <p>
+        <strong>Phone</strong><br>
+        <a href="tel:6153229964">(615) 322-9964</a>
+      </p>
+      <p>
+        <strong>Hours</strong><br>
+        Open 24 Hours, 7 Days a Week<br>
+        <em style="font-size:.85rem; color:var(--mid)">Walk-ins always welcome</em>
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="tel:6153229964">📞 Call Now</a>
+        <a class="btn" href="https://maps.google.com/?q=1505+Jefferson+St+Nashville+TN" target="_blank">Get Directions</a>
+      </div>
+    </div>
+    <div>
+      <div class="map-embed">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3221.1!2d-86.8026357!3d36.1702628!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x886456dd94b3120f%3A0xa129496a3d20699b!2sCraighead%20Barber%20Shop!5e0!3m2!1sen!2sus!4v1700000000000"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div class="barber-pole-top"></div>
+<footer>
+  &copy; 2025 <span>Craighead Barber Shop</span> &nbsp;&bull;&nbsp; 1505 Jefferson St, Nashville, TN &nbsp;&bull;&nbsp; (615) 322-9964
+</footer>
+
+</body>
+</html>
